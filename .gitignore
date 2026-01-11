@@ -94,4 +94,7 @@ models/
 *.bak
 
 # Temporary files
-temp_*.geojson
+*.out
+*.tmp
+*.log
+*.db
