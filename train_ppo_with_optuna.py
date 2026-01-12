@@ -82,7 +82,7 @@ def make_env(task_name='reach-v3', rank=0, seed=0, max_episode_steps=500, normal
             'Meta-World/MT1',
             env_name=task_name,
             seed=seed + rank,  # Different seed for each parallel env
-            reward_function_version='v3',  # Use v2 reward (default, more stable)
+            reward_function_version='v2',  # Use v2 reward (default, more stable)
             max_episode_steps=max_episode_steps,  # Episode length
             terminate_on_success=False,  # Don't terminate early on success (for training)
             disable_env_checker=True,  # Disable passive env checker to avoid obs space warnings
@@ -255,14 +255,14 @@ def objective(trial: optuna.Trial, config: dict) -> float:
 if __name__ == "__main__":
     # ==================== CONFIGURATION ====================
     # Task Selection
-    TASK_NAME = "push-v3"  # Change to other MT1 tasks
+    TASK_NAME = "reach-v3"  # Change to other MT1 tasks
     
     # Environment Settings
-    N_ENVS = 8  # Number of parallel environments
+    N_ENVS = 4  # Parallel envs per trial (reduced for parallel trials)
     SEED = 42
     
     # Training Settings (for each trial)
-    TOTAL_TIMESTEPS = 100_000  # Reduced for faster hyperparameter search
+    TOTAL_TIMESTEPS = 200_000  # Reduced for faster hyperparameter search
     MAX_EPISODE_STEPS = 500
     NORMALIZE_REWARD = False
     
@@ -271,8 +271,8 @@ if __name__ == "__main__":
     N_EVAL_EPISODES = 10  # Episodes per evaluation
     
     # Optuna Settings
-    N_TRIALS = 3  # Number of hyperparameter combinations to try
-    N_JOBS = 1  # Number of parallel trials (set to 1 to avoid resource conflicts)
+    N_TRIALS = 20  # Number of hyperparameter combinations to try
+    N_JOBS = 2  # Run 2 trials in parallel (optimal for i7-9850H 6-core CPU)
     STUDY_NAME = f"ppo_{TASK_NAME}_optimization"
     # ======================================================
     
@@ -285,7 +285,9 @@ if __name__ == "__main__":
     print("PPO Hyperparameter Optimization with Optuna")
     print(f"Task: {TASK_NAME}")
     print(f"Number of trials: {N_TRIALS}")
+    print(f"Parallel jobs: {N_JOBS} (running {N_JOBS} trials simultaneously)")
     print(f"Timesteps per trial: {TOTAL_TIMESTEPS:,}")
+    print(f"Estimated time: ~{(N_TRIALS // N_JOBS) * 10}-{(N_TRIALS // N_JOBS) * 15} minutes")
     print("=" * 60)
     
     # Configuration dictionary
