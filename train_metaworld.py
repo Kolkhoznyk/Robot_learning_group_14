@@ -218,7 +218,7 @@ if __name__ == "__main__":
             gamma=0.9768745579131057,  # Higher gamma for multi-step tasks
             gae_lambda=0.9338301951724949,
             clip_range=0.16175078586906752,
-            ent_coef=0.01,  
+            ent_coef=0.001,  
             vf_coef=0.21653675230341524,
             max_grad_norm=4.456656130687065,
             n_steps=2048,

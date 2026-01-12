@@ -31,7 +31,7 @@ if __name__ == "__main__":
         env_name=TASK_NAME,
         seed=SEED,
         render_mode='human',  # Enable visual rendering
-        reward_function_version='v3',  # Use v2 reward (same as training)
+        reward_function_version='v2',  # Use v2 reward (same as training)
         max_episode_steps=MAX_EPISODE_STEPS,  # Episode length
         terminate_on_success=False,  # Don't terminate early (for consistent evaluation)
     )
