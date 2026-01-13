@@ -1,5 +1,7 @@
 # Robot_learning_group_14
-This is a reinforcement learning project for course Robot Learning at TU Wien
+This is a reinforcement learning project for course Robot Learning at TU Wien.
+
+The goal is to compare deep reinforcement learning algorithms: SAC and PPO on tasks MT1, MT3, MT10 and MT50 and to find the best way for training multitask models with SAC and PPO  
 
 clone the repo 
 create your own branch:
