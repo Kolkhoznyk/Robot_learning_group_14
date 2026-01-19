@@ -30,7 +30,7 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 from metaworld_envs.mt10_env import MetaWorldMT10Env
 from metaworld_envs.task_onehot_wrapper import TaskOneHotObsWrapper
 from callbacks.task_metrics import MT10TaskMetricsCallback
-from algo_sac_disent_alpha.sac_disentangled_alpha import SACDisentangledAlpha
+from algos.sac_disentangled_alpha import SACDisentangledAlpha
 
 
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     SEED = 42
 
     # Training settings
-    TOTAL_TIMESTEPS = 5_000_000        # increase later
+    TOTAL_TIMESTEPS = 6_000_000        # increase later
     MAX_EPISODE_STEPS = 500
     NORMALIZE_REWARD = True
 
