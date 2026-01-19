@@ -19,18 +19,18 @@ from stable_baselines3 import PPO, SAC
 
 if __name__ == "__main__":
     # Configuration
-    TASK_NAME = "reach-v3"  # Must match the task used for training (v3, not v2!)
+    TASK_NAME = "pick-place-v3"  # Must match the task used for training (v3, not v2!)
     ALGORITHM = "PPO"  # "TD3" or "SAC" - must match training algorithm
     SEED = 42
     MAX_EPISODE_STEPS = 500  # Must match training configuration
 
-    # Create environment with rendering
+    # Create environment WITHOUT rendering (for headless servers)
     print(f"Creating {TASK_NAME} environment...")
     env = gym.make(
         'Meta-World/MT1',
         env_name=TASK_NAME,
         seed=SEED,
-        render_mode='human',  # Enable visual rendering
+        render_mode=None,  # Disabled rendering for headless evaluation
         reward_function_version='v2',  # Use v2 reward (same as training)
         max_episode_steps=MAX_EPISODE_STEPS,  # Episode length
         terminate_on_success=False,  # Don't terminate early (for consistent evaluation)
@@ -89,8 +89,7 @@ if __name__ == "__main__":
             if 'success' in info and info['success']:
                 episode_success = True
 
-            # Render
-            env.render()
+            # No rendering needed (headless mode)
 
         print(f"Episode finished after {steps} steps")
         print(f"Total reward: {total_reward:.2f}")

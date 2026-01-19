@@ -118,25 +118,25 @@ def objective(trial: optuna.Trial, config: dict) -> float:
     learning_rate = trial.suggest_float('learning_rate', 1e-5, 1e-3, log=True)
     
     # Batch size: categorical choice from common values
-    batch_size = trial.suggest_categorical('batch_size', [64, 128, 256, 512])
+    batch_size = trial.suggest_categorical('batch_size', [128, 256, 512])
     
     # Discount factor (gamma): uniform sampling
-    gamma = trial.suggest_float('gamma', 0.95, 0.9999)
+    gamma = trial.suggest_float('gamma', 0.96, 0.9999)
     
     # GAE lambda: uniform sampling for advantage estimation
-    gae_lambda = trial.suggest_float('gae_lambda', 0.9, 0.99)
+    gae_lambda = trial.suggest_float('gae_lambda', 0.93, 0.99)
     
     # Clip range: uniform sampling for PPO clipping
     clip_range = trial.suggest_float('clip_range', 0.1, 0.4)
     
     # Entropy coefficient: log-uniform for exploration
-    ent_coef = trial.suggest_float('ent_coef', 1e-8, 1e-1, log=True)
+    ent_coef = trial.suggest_float('ent_coef', 1e-3, 1e-1, log=True)
     
     # Value function coefficient
     vf_coef = trial.suggest_float('vf_coef', 0.1, 1.0)
     
     # Network architecture: sample layer sizes
-    n_layers = trial.suggest_int('n_layers', 2, 4)
+    n_layers = trial.suggest_int('n_layers', 2, 3)
     layer_size = trial.suggest_categorical('layer_size', [128, 256, 512])
     net_arch = [layer_size] * n_layers
     
@@ -255,24 +255,24 @@ def objective(trial: optuna.Trial, config: dict) -> float:
 if __name__ == "__main__":
     # ==================== CONFIGURATION ====================
     # Task Selection
-    TASK_NAME = "reach-v3"  # Change to other MT1 tasks
+    TASK_NAME = "pick-place-v3"  # Change to other MT1 tasks
     
     # Environment Settings
-    N_ENVS = 4  # Parallel envs per trial (reduced for parallel trials)
+    N_ENVS = 6  # Parallel envs per trial (reduced to prevent subprocess crashes)
     SEED = 42
     
     # Training Settings (for each trial)
-    TOTAL_TIMESTEPS = 200_000  # Reduced for faster hyperparameter search
+    TOTAL_TIMESTEPS = 200_000  # Total timesteps per trial
     MAX_EPISODE_STEPS = 500
     NORMALIZE_REWARD = False
     
     # Evaluation Settings
-    EVAL_FREQ = 10000  # Evaluate every N steps
+    EVAL_FREQ = 20000  # Evaluate every 20k steps (25 evaluation points)
     N_EVAL_EPISODES = 10  # Episodes per evaluation
     
     # Optuna Settings
-    N_TRIALS = 20  # Number of hyperparameter combinations to try
-    N_JOBS = 2  # Run 2 trials in parallel (optimal for i7-9850H 6-core CPU)
+    N_TRIALS = 25  # Number of hyperparameter combinations to try
+    N_JOBS = 10  # Number of parallel jobs (trials) to run
     STUDY_NAME = f"ppo_{TASK_NAME}_optimization"
     # ======================================================
     
@@ -302,11 +302,15 @@ if __name__ == "__main__":
         'n_eval_episodes': N_EVAL_EPISODES,
     }
     
-    # Create Optuna study with median pruner
+    # Create Optuna study with less aggressive median pruner
     study = optuna.create_study(
         study_name=STUDY_NAME,
         direction='maximize',  # Maximize mean reward
-        pruner=MedianPruner(n_startup_trials=5, n_warmup_steps=5),
+        pruner=MedianPruner(
+            n_startup_trials=10,  # Wait for 10 trials before pruning starts
+            n_warmup_steps=10,    # Wait for 10 evaluation steps before pruning
+            interval_steps=1      # Check at every evaluation point
+        ),
         storage=f"sqlite:///./optuna_studies/{STUDY_NAME}.db",
         load_if_exists=True  # Resume if study exists
     )

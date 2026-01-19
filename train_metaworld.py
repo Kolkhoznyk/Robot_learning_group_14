@@ -69,7 +69,7 @@ def make_env(task_name='reach-v3', rank=0, seed=0, max_episode_steps=500, normal
 if __name__ == "__main__":
     # ==================== CONFIGURATION ====================
     # Task Selection
-    TASK_NAME = "reach-v3"  # Change to other MT1 tasks like "push-v3", "pick-place-v3", etc.
+    TASK_NAME = "pick-place-v3"  # Change to other MT1 tasks like "push-v3", "pick-place-v3", etc.
 
     # Algorithm Selection
     ALGORITHM = "PPO"  # "TD3" or "DDPG" - SAC recommended for Meta-World
@@ -78,11 +78,11 @@ if __name__ == "__main__":
     USE_PARALLEL = True  # Set to False for single environment
     N_ENVS = 8 if USE_PARALLEL else 1
     SEED = 42
-    N_JOBS = 2  # Number of parallel jobs for training (if applicable)
+    N_JOBS = 10  # Number of parallel jobs for training (if applicable)
     # Training Settings
     TOTAL_TIMESTEPS = 2_000_000  # Increased for better convergence
     MAX_EPISODE_STEPS = 500  # Maximum steps per episode
-    NORMALIZE_REWARD = False  # Set to True if experiencing training instability
+    NORMALIZE_REWARD = True  # Set to True if experiencing training instability
 
     # Evaluation Settings
     EVAL_FREQ = 10000  # Evaluate every N steps
@@ -213,16 +213,16 @@ if __name__ == "__main__":
         model = PPO(
             policy="MlpPolicy",
             env=env,
-            learning_rate=0.00025886218443096096,
-            batch_size=64,
-            gamma=0.9768745579131057,  # Higher gamma for multi-step tasks
-            gae_lambda=0.9338301951724949,
-            clip_range=0.16175078586906752,
-            ent_coef=0.001,  
-            vf_coef=0.21653675230341524,
-            max_grad_norm=4.456656130687065,
+            learning_rate=0.0007163802585928034,
+            batch_size=128,
+            gamma=0.9635616907036089,  # Higher gamma for multi-step tasks
+            gae_lambda=0.9305563864624098,
+            clip_range=0.20578951196490026,
+            ent_coef=0.014673959339927485,  
+            vf_coef=0.8618081141238707,
+            max_grad_norm=3.6516436020832868,
             n_steps=2048,
-            n_epochs=13,
+            n_epochs=12,
             policy_kwargs=dict(
                 net_arch=[256, 256, 256],  # Simpler network often works better
                 activation_fn=torch.nn.ReLU 

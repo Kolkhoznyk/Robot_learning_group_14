@@ -62,7 +62,7 @@ if __name__ == "__main__":
             'Meta-World/MT1',
             env_name=task_name,
             seed=SEED + 1000 + i,
-            render_mode='human',  # Enable visual rendering
+            render_mode=None,  # Enable visual rendering
             reward_function_version='v3',  # Use v2 reward (same as training)
             max_episode_steps=MAX_EPISODE_STEPS,  # Episode length
             terminate_on_success=False,  # Don't terminate early (for consistent evaluation)
@@ -72,12 +72,12 @@ if __name__ == "__main__":
         eval_envs[task_name] = env
     
     # Load the trained model
-    model_path = f"./metaworld_models/best_MT3_model.zip"
+    model_path = f"/home/fkulchytskyi/Robot_learning_group_14/MT3_konstante_Rewardskalierungen/metaworld_models/best_MT3_model.zip"
 
     if not os.path.exists(model_path):
         print(f"Model not found at {model_path}")
         print("Trying final model instead...")
-        model_path = f"./metaworld_models/{ALGORITHM.lower()}_MT3_final.zip"
+        model_path = f"/home/fkulchytskyi/Robot_learning_group_14/MT3_konstante_Rewardskalierungen/metaworld_models/{ALGORITHM.lower()}_MT3_final.zip"
 
         if not os.path.exists(model_path):
             print(f"No trained model found!")
@@ -126,7 +126,7 @@ if __name__ == "__main__":
                     episode_success = True
 
                 # Render
-                env.render()
+                #env.render()
 
             print(f"Episode finished after {steps} steps")
             print(f"Total reward: {total_reward:.2f}")

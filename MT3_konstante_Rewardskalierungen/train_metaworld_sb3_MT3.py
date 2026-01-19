@@ -237,20 +237,19 @@ if __name__ == "__main__":
     # MT3
     TASK_LIST = ["reach-v3", "push-v3", "pick-place-v3"]
     TASK_PROBS = None
-    REWARD_SCALES = [0.01, 0.8, 1.0]
+    REWARD_SCALES = [0.1, 0.8, 1.0]
 
     # Algorithm Selection
     ALGORITHM = "SAC"  # SAC or PPO
 
     # Environment Settings
     USE_PARALLEL = True  # Set to False for single environment
-    N_ENVS = 8 if USE_PARALLEL else 1
+    N_ENVS = 32 if USE_PARALLEL else 1
     SEED = 42
-
     # Training Settings
-    TOTAL_TIMESTEPS = 1_500_000  # Increased for better convergence
+    TOTAL_TIMESTEPS = 2_000_000  # Increased for better convergence
     MAX_EPISODE_STEPS = 500  # Maximum steps per episode
-    NORMALIZE_REWARD = False  # Set to True if experiencing training instability
+    NORMALIZE_REWARD = True  # Set to True if experiencing training instability
 
     # Evaluation Settings
     EVAL_FREQ = 10000  # Evaluate every N steps
@@ -298,25 +297,25 @@ if __name__ == "__main__":
         model = SAC(
             policy="MlpPolicy",
             env=env,
-            learning_rate=3e-4,
-            buffer_size=1_000_000,
+            learning_rate=0.000252,
+            buffer_size=1_500_000,
             learning_starts=5000,  # Start training sooner
-            batch_size=512,
-            tau=0.005,
-            gamma=0.99,  # Higher gamma for multi-step tasks
+            batch_size=1024,
+            tau=0.0041,
+            gamma=0.97,  # Higher gamma for multi-step tasks
             train_freq=1,
             gradient_steps=-1,  # Train on all available data
             ent_coef='auto',  # Automatic entropy tuning - crucial for SAC
             target_entropy='auto',  # Automatically set target entropy
             use_sde=False,  # State-dependent exploration (can be enabled for more exploration)
             policy_kwargs=dict(
-                net_arch=[512, 512, 256],  # Deeper network
+                net_arch=[256, 256, 256],  # Deeper network
                 activation_fn=torch.nn.ReLU,
                 log_std_init=-3,  # Initial exploration level
             ),
             tensorboard_log=f"./metaworld_logs/{ALGORITHM}/",
             verbose=1,
-            device="auto",
+            device="cuda",
             seed=SEED,
         )
     elif ALGORITHM == "PPO":
