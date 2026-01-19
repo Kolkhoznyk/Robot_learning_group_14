@@ -79,13 +79,13 @@ if __name__ == "__main__":
 
     # Environment settings
     USE_PARALLEL = True
-    N_ENVS = 10 if USE_PARALLEL else 1
+    N_ENVS = 32 if USE_PARALLEL else 1
     SEED = 42
 
     # Training settings
-    TOTAL_TIMESTEPS = 10_000        # increase later
+    TOTAL_TIMESTEPS = 5_000_000        # increase later
     MAX_EPISODE_STEPS = 500
-    NORMALIZE_REWARD = False
+    NORMALIZE_REWARD = True
 
     # Evaluation / checkpointing
     EVAL_FREQ = 10_000
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         gamma=0.99,
         tau=5e-3,
         buffer_size=2_000_000,
-        learning_starts=1500,
+        learning_starts=5000,
         batch_size=512,
         train_freq=1,
         gradient_steps=1,
