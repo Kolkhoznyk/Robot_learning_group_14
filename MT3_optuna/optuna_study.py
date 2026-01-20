@@ -154,7 +154,11 @@ class OptunaStudy:
         
     def objective(self, trial: optuna.Trial) -> float:
         self.n_envs = self.n_envs_choices
-        max_episode_steps = self.max_episode_steps
+        gradient_steps = int(trial.suggest_categorical("gradient_steps", self.gradient_steps_choices))
+        if gradient_steps > 1:
+            max_episode_steps = self.max_episode_steps//2
+        else:
+            max_episode_steps = self.max_episode_steps
         buffersize = trial.suggest_categorical("buffersize", self.buffersize)
         learning_rate = trial.suggest_float("learning_rate", self.lr_min, self.lr_max, log=True)
         batch_size = trial.suggest_categorical("batch_size", self.batch_sizes)
@@ -189,7 +193,7 @@ class OptunaStudy:
                 tau=tau,
                 gamma=gamma,  # Higher gamma for multi-step tasks
                 train_freq=self.train_freq_choices,
-                gradient_steps=self.gradient_steps_choices,  # Train on all available data
+                gradient_steps=gradient_steps,  # Train on all available data
                 ent_coef=self.ent_coef,  # Automatic entropy tuning - crucial for SAC
                 target_entropy=self.target_entropy,  # Automatically set target entropy
                 use_sde=self.use_sde,  # State-dependent exploration (can be enabled for more exploration)

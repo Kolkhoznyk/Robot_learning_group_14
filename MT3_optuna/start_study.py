@@ -70,7 +70,7 @@ def main():
         # =========================================================
         
         "train_freq_choices": 1,
-        "gradient_steps_choices": 1,  # Tupel mit einem Element!
+        "gradient_steps_choices": (1, 3),  # Tupel mit einem Element!
 
         "target_entropy": "auto",
 
@@ -108,7 +108,35 @@ def main():
         "batch_size": 256,
         "gamma": 0.9493925038998,
         "tau": 0.004187861038711214,
-        "net_key": "3layer_big"
+        "net_key": "3layer_big",
+        "gradient_steps_choices": 1,
+    })
+    study.enqueue_trial({
+        "buffersize": 500000,
+        "learning_rate": 0.0002536983386966405,
+        "batch_size": 256,
+        "gamma": 0.9425076029588987,
+        "tau": 0.008566665643023242,
+        "net_key": "3layer_big",
+        "gradient_steps_choices": 1,
+    })
+    study.enqueue_trial({
+        "buffersize": 500000,
+        "learning_rate": 7.368445787171149e-05,
+        "batch_size": 512,
+        "gamma": 0.9381403143072642,
+        "tau": 0.00032306245015071265	,
+        "net_key": "4layer_taper",
+        "gradient_steps_choices": 3,
+    })
+    study.enqueue_trial({
+        "buffersize": 500000,
+        "learning_rate": 5.224044313331383e-05,
+        "batch_size": 256,
+        "gamma": 0.9514945668624958,
+        "tau": 0.00032202847572828367,
+        "net_key": "4layer_taper",
+        "gradient_steps_choices": 3,
     })
 
     study.optimize(
